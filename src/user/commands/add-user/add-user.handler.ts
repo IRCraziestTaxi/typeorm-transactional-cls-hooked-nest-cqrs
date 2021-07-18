@@ -10,23 +10,26 @@ import { AddUserCommand } from "./add-user.command";
 export class AddUserHandler implements ICommandHandler<AddUserCommand> {
     @Transactional()
     public async execute(command: AddUserCommand): Promise<CommandResult<number>> {
-        try {
-            const userRepository = new LinqRepository(User);
+        // Mystery solved... I missed that catching the error
+        // rather than letting it throw causes @Transactional
+        // to not realize that an error occurred.
+        // try {
+        const userRepository = new LinqRepository(User);
 
-            const mapper = new Mapper();
+        const mapper = new Mapper();
 
-            const addUser = mapper.map(command, new User());
+        const addUser = mapper.map(command, new User());
 
-            const addedUser = await userRepository.create(addUser);
+        const addedUser = await userRepository.create(addUser);
 
-            // return new GenericResponse({
-            //     value: addedUser.id
-            // });
+        // return new GenericResponse({
+        //     value: addedUser.id
+        // });
 
-            throw new Error("This error should cause the transaction to roll back the added user.");
-        }
-        catch (error) {
-            return new Rejection(error);
-        }
+        throw new Error("This error should cause the transaction to roll back the added user.");
+        // }
+        // catch (error) {
+        //     return new Rejection(error);
+        // }
     }
 }
