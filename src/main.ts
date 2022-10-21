@@ -1,10 +1,9 @@
 import { NestFactory } from "@nestjs/core";
 import { RejectionFilter, rejectionPipe } from "@responsekit/nestjs";
-import { initializeTransactionalContext, patchTypeORMRepositoryWithBaseRepository } from "typeorm-transactional-cls-hooked";
+import { initializeTransactionalContext } from "typeorm-transactional";
 import { AppModule } from "./app.module";
 
 initializeTransactionalContext();
-patchTypeORMRepositoryWithBaseRepository();
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
